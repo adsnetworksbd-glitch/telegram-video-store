@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Safe-area variables.
+     Order of precedence: JS-synced values (useTelegram.initTelegramApp)
+     → Telegram's own --tg-* CSS vars → browser env(). All fall back to 0. */
+  :root {
+    --app-safe-top: calc(max(env(safe-area-inset-top, 0px), var(--tg-safe-area-inset-top, 0px)) + var(--tg-content-safe-area-inset-top, 0px));
+    --app-safe-bottom: calc(max(env(safe-area-inset-bottom, 0px), var(--tg-safe-area-inset-bottom, 0px)) + var(--tg-content-safe-area-inset-bottom, 0px));
+    --app-safe-left: max(env(safe-area-inset-left, 0px), var(--tg-safe-area-inset-left, 0px));
+    --app-safe-right: max(env(safe-area-inset-right, 0px), var(--tg-safe-area-inset-right, 0px));
+    --nav-height: 58px;
+  }
+
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    overscroll-behavior: none;
+  }
+  html, body { min-height: 100%; }
+
+  body {
+    background-color: #0A0E1A;
+    color: #F9FAFB;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    /* Top safe area only: the bottom one is handled by BottomNav / .pb-* helpers */
+    padding-top: var(--app-safe-top);
+    padding-left: var(--app-safe-left);
+    padding-right: var(--app-safe-right);
+  }
+
+  /* Hide scrollbar but keep scrollable */
+  ::-webkit-scrollbar { display: none; }
+  * { scrollbar-width: none; }
+
+  input, textarea, button {
+    font-family: inherit;
+  }
+}
+
+@layer components {
+  /* Page wrapper with bottom nav space */
+  .page-body {
+    @apply overflow-y-auto;
+    padding-bottom: calc(var(--nav-height) + 16px + var(--app-safe-bottom));
+    min-height: calc(100vh - var(--app-safe-top));
+  }
+
+  /* Full-height page (Telegram stable viewport height when available) */
+  .min-h-app {
+    min-height: 100vh;
+    min-height: 100dvh;
+    min-height: var(--tg-viewport-stable-height, 100dvh);
+  }
+
+  /* Bottom padding helpers that respect the safe area */
+  .pb-nav  { padding-bottom: calc(var(--nav-height) + 16px + var(--app-safe-bottom)); }
+  .pb-page { padding-bottom: calc(16px + var(--app-safe-bottom)); }
+
+  /* Sticky headers sit just below the top safe area */
+  .sticky-safe { position: sticky; top: var(--app-safe-top); }
+
+  /* Section headers */
+  .section-header {
+    @apply flex items-center justify-between px-4 mb-3;
+  }
+  .section-title {
+    @apply text-[15px] font-semibold text-white;
+  }
+  .section-link {
+    @apply text-[12px] text-primary font-medium;
+  }
+
+  /* Cards */
+  .card-base {
+    @apply bg-card border border-border rounded-card;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply w-full py-[14px] px-4 rounded-btn border-none
+           bg-gradient-blue text-white text-[14px] font-bold
+           cursor-pointer flex items-center justify-center gap-2
+           active:scale-[0.98] transition-transform;
+  }
+  .btn-secondary {
+    @apply w-full py-[13px] px-4 rounded-btn
+           border border-secondary/50 bg-secondary/10
+           text-secondary-light text-[14px] font-bold
+           cursor-pointer flex items-center justify-between
+           active:scale-[0.98] transition-transform;
+  }
+  .btn-success {
+    @apply w-full py-[14px] px-4 rounded-btn border-none
+           bg-gradient-green text-white text-[14px] font-bold
+           cursor-pointer flex items-center justify-center gap-2
+           active:scale-[0.98] transition-transform;
+  }
+  .btn-ghost {
+    @apply w-full py-[12px] px-4 rounded-[12px]
+           border border-border bg-transparent
+           text-[#9CA3AF] text-[13px] font-medium cursor-pointer
+           active:scale-[0.98] transition-transform;
+  }
+
+  /* Quality badges */
+  .badge-quality {
+    @apply text-[9px] font-bold px-[5px] py-[2px] rounded-[4px]
+           bg-primary/85 text-white;
+  }
+  .badge-duration {
+    @apply text-[9px] text-white/90 bg-black/60
+           px-[5px] py-[2px] rounded-[4px];
+  }
+
+  /* Skeleton loader */
+  .skeleton {
+    @apply bg-card2 rounded animate-pulse;
+  }
+
+  /* Horizontal scroll row */
+  .h-scroll {
+    @apply flex gap-[10px] px-4 overflow-x-auto;
+  }
+
+  /* Info chips row */
+  .chip-row {
+    @apply flex gap-2 flex-wrap;
+  }
+  .chip-item {
+    @apply flex items-center gap-[5px] bg-card border border-border
+           rounded-[8px] px-[10px] py-[5px];
+  }
+}
